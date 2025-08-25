@@ -4,6 +4,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
 const cardVariants = {
   initial: (direction) => ({
     x: direction > 0 ? 150 : -150,
@@ -91,7 +92,7 @@ export default function RDProjectsSection() {
         style={{
           backgroundImage: sectionBgImage
             ? `url(${sectionBgImage})`
-            : `url(/default-bg.jpg)`,
+            : `url(/default-bg.avif)`,
         }}
       />
 
