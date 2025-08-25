@@ -1,10 +1,10 @@
 // src/api/servicesApi.js
 
-const BASE_URL = "http://localhost:5000/api"; // or from .env file
+const apiUrl = import.meta.env.VITE_API_URL; // or from .env file
 
 export const fetchServices = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/services`);
+        const response = await fetch(`${apiUrl}/services`);
         if (!response.ok) throw new Error("Failed to fetch services");
         const data = await response.json();
         return data;
@@ -17,7 +17,7 @@ export const fetchServices = async () => {
 
 export const fetchSectionDescription = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/service-description/description");
+    const res = await fetch(`${apiUrl}/api/service-description/description`);
     if (!res.ok) throw new Error("Failed to fetch description");
     const data = await res.json();
     return data.description;
@@ -29,7 +29,7 @@ export const fetchSectionDescription = async () => {
 
 export const fetchSectionTitle = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/service-description/title");
+    const res = await fetch(`${apiUrl}/api/service-description/title`);
     if (!res.ok) throw new Error("Failed to fetch title");
     const data = await res.json();
     return data.title;

@@ -1,14 +1,13 @@
 // src/services/heroService.js
 import axios from "axios";
-
-const API_BASE = "http://localhost:5000/api/hero";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const getHeroContent = async () => {
-  const response = await axios.get(`${API_BASE}/hero-content`);
+  const response = await axios.get(`${apiUrl}/hero-content`);
   return response.data;
 };
 
 export const updateHeroContent = async (content) => {
-  const response = await axios.put(`${API_BASE}/hero-content-update`, content);
+  const response = await axios.put(`${apiUrl}/hero-content-update`, content);
   return response.data;
 };

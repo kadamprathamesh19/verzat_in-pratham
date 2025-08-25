@@ -7,11 +7,12 @@ export const BaseCompanyContext = createContext();
 
 export const BaseCompanyProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Fetch base description
   const getBaseDescription = async () => {
     try {
-      const res = await axios.get('/api/base-description/description');
+      const res = await axios.get(`${apiUrl}/api/base-description/description`);
       return res.data.description;
     } catch (err) {
       toast.error('Failed to fetch base description');
@@ -22,7 +23,7 @@ export const BaseCompanyProvider = ({ children }) => {
   // Fetch all products
   const getCompanyProducts = async () => {
     try {
-      const res = await axios.get('/api/base-company-product');
+      const res = await axios.get(`${apiUrl}/api/base-company-product`);
       return res.data;
     } catch (err) {
       toast.error('Failed to fetch company products');

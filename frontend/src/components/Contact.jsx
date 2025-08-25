@@ -34,11 +34,12 @@ const ContactForm = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [contact, setContact] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const res = await fetch("/api/contact");
+        const res = await fetch(`${apiUrl}/api/contact`);
         if (!res.ok) throw new Error("Failed to load contact info");
         const data = await res.json();
         setContact(data);
@@ -58,7 +59,7 @@ const ContactForm = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/messages", {
+      const res = await fetch(`${apiUrl}/api/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -1,7 +1,8 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 
 // fetchAboutDescription.js
 export const fetchAboutDescription = async () => {
-  const res = await fetch("http://localhost:5000/api/about/description");
+  const res = await fetch(`${apiUrl}/api/about/description`);
   if (!res.ok) throw new Error("Failed to fetch description");
   const data = await res.json();
 
@@ -16,7 +17,7 @@ export const fetchAboutDescription = async () => {
 
 // fetchAboutValues.js
 export const fetchAboutValues = async () => {
-  const res = await fetch("http://localhost:5000/api/about/values");
+  const res = await fetch(`${apiUrl}/api/about/values`);
   if (!res.ok) throw new Error('Failed to fetch values');
   const data = await res.json();
 

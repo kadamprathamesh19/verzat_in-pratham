@@ -32,15 +32,16 @@ export default function RDProjectsSection() {
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [direction, setDirection] = useState(1);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const loadData = async () => {
       try {
         // Fetch products
-        const productsRes = await axios.get("http://localhost:5000/api/latest-products");
+        const productsRes = await axios.get(`${apiUrl}/api/latest-products`);
 
         // Fetch latest description, title, and background image
-        const descRes = await axios.get("http://localhost:5000/api/latest-description");
+        const descRes = await axios.get(`${apiUrl}/api/latest-description`);
 
         setProductsData(productsRes.data);
 
