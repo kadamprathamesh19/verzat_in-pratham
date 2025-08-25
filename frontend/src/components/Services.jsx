@@ -29,6 +29,7 @@ const Services = () => {
     const [services, setServices] = useState([]);
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         AOS.init({ duration: 800, easing: "ease-in-out", once: true });
@@ -44,7 +45,7 @@ const Services = () => {
             .catch((err) => console.error("Failed to fetch description:", err));
 
         // Fetch services
-        fetch("http://localhost:5000/api/services")
+        fetch(`${apiUrl}/api/services`)
             .then((res) => res.json())
             .then((data) => setServices(data))
             .catch((err) => console.error("Failed to fetch services:", err));
