@@ -32,7 +32,7 @@ const Sidebar = () => {
       <div
         className={`${
           isOpen ? 'block' : 'hidden'
-        } md:block md:relative fixed z-50 w-64 h-screen bg-gray-800 text-white p-4`}
+        } md:block md:relative fixed z-50 w-64 h-[150vh] bg-gray-800 text-white p-4`}
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
