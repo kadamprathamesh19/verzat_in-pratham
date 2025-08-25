@@ -1,0 +1,12 @@
+# Ignore node_modules folders in all parts of the project
+node_modules/
+
+# Ignore environment files (e.g., API keys, DB passwords)
+.env
+
+# Ignore build output folders
+build/
+dist/
+
+# macOS system file (optional)
+.DS_Store
