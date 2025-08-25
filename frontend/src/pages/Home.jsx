@@ -7,7 +7,7 @@ import Services from '../components/Services'
 import Contact from '../components/Contact'
 import RDProjectsSection from '../components/RDLatestProjects'
 import ParentCompanySection from '../components/ParentCompanySection'
-import Vision from '../components/vision'
+import Vision from '../components/Vision'
 
 
 
