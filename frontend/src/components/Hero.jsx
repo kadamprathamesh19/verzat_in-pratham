@@ -75,7 +75,7 @@ const Hero = () => {
       className="relative h-[150vh] w-full overflow-hidden rounded-t-sm"
     >
       {/* Background Video */}
-      {/* Background Video */}
+
       <video
         className="absolute top-0 left-0 w-full h-full object-cover z-0 blur-md"
         src={heroContent.videoUrl || heroBg}  // use backend videoUrl, fallback to local
