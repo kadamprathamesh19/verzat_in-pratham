@@ -8,6 +8,7 @@ export const ServicesProvider = ({ children }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Section Title & Description
   const [sectionTitle, setSectionTitle] = useState("");
@@ -20,7 +21,7 @@ export const ServicesProvider = ({ children }) => {
   const fetchSectionTitle = async () => {
     setTitleLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/service-description/title");
+      const res = await fetch(`${apiUrl}/api/service-description/title`);
       const data = await res.json();
       setSectionTitle(data.title || "");
     } catch (err) {
@@ -32,7 +33,7 @@ export const ServicesProvider = ({ children }) => {
 
   const updateSectionTitle = async (newTitle) => {
     try {
-      const res = await fetch("http://localhost:5000/api/service-description/title", {
+      const res = await fetch(`${apiUrl}/api/service-description/title`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: newTitle }),
@@ -53,7 +54,7 @@ export const ServicesProvider = ({ children }) => {
   const fetchSectionDescription = async () => {
     setDescLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/service-description/description");
+      const res = await fetch(`${apiUrl}/api/service-description/description`);
       const data = await res.json();
       setSectionDescription(data.description || "");
     } catch (err) {
@@ -65,7 +66,7 @@ export const ServicesProvider = ({ children }) => {
 
   const updateSectionDescription = async (newDescription) => {
     try {
-      const res = await fetch("http://localhost:5000/api/service-description/description", {
+      const res = await fetch(`${apiUrl}/api/service-description/description`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ description: newDescription }),
@@ -86,7 +87,7 @@ export const ServicesProvider = ({ children }) => {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/services");
+      const res = await axios.get(`${apiUrl}/api/services`);
       setServices(res.data);
       setError(null);
     } catch (err) {
@@ -98,7 +99,7 @@ export const ServicesProvider = ({ children }) => {
 
   const addService = async (newService) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/services", newService);
+      const res = await axios.post(`${apiUrl}/api/services`, newService);
       setServices((prev) => [...prev, res.data]);
       return Promise.resolve();
     } catch (err) {
@@ -108,7 +109,7 @@ export const ServicesProvider = ({ children }) => {
 
   const updateService = async (id, updatedService) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/services/${id}`, updatedService);
+      const res = await axios.put(`${apiUrl}/api/services/${id}`, updatedService);
       setServices((prev) =>
         prev.map((service) => (service._id === id ? res.data : service))
       );
@@ -120,7 +121,7 @@ export const ServicesProvider = ({ children }) => {
 
   const deleteService = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/services/${id}`);
+      await axios.delete(`${apiUrl}/api/services/${id}`);
       setServices((prev) => prev.filter((service) => service._id !== id));
       return Promise.resolve();
     } catch (err) {

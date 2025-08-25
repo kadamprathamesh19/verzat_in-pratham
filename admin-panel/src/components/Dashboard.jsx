@@ -75,6 +75,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [filterRange, setFilterRange] = useState('week');
   const [customDate, setCustomDate] = useState('');
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -103,9 +104,9 @@ export default function Dashboard() {
       const query = fromDate ? `?from=${encodeURIComponent(fromDate)}` : '';
 
       const [usersRes, messagesRes, newslettersRes] = await Promise.all([
-        fetch(`/api/admin/users${query}`, { headers }),
-        fetch(`/api/admin/messages${query}`, { headers }),
-        fetch(`/api/admin/newsletter${query}`, { headers }),
+        fetch(`${apiUrl}/api/admin/users${query}`, { headers }),
+        fetch(`${apiUrl}/api/admin/messages${query}`, { headers }),
+        fetch(`${apiUrl}/api/admin/newsletter${query}`, { headers }),
       ]);
       if (!usersRes.ok || !messagesRes.ok || !newslettersRes.ok) {
         throw new Error('Failed to fetch one or more resources');

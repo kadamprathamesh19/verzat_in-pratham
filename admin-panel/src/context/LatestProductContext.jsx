@@ -11,9 +11,10 @@ export const LatestProductProvider = ({ children }) => {
     const [sectionTitle, setSectionTitle] = useState('');
     const [sectionImage, setSectionImage] = useState('');
 
-    const API_BASE = 'http://localhost:5000/api/latest-products';
-    const API_DESC_BASE = 'http://localhost:5000/api/latest-description';
-    const CLOUDINARY_UPLOAD = 'http://localhost:5000/api/latest-description/upload'; // should be your cloudinary route
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const API_BASE = `${apiUrl}/api/latest-products`;
+    const API_DESC_BASE = `${apiUrl}/api/latest-description`;
+    const CLOUDINARY_UPLOAD = `${apiUrl}/api/latest-description/upload`; // should be your cloudinary route
 
     useEffect(() => {
         fetchProducts();

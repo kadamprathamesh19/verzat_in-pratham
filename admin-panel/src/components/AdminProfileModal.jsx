@@ -6,6 +6,7 @@ const AdminProfileModal = ({ adminData, setIsModalOpen, updateAdminData }) => {
     const [formData, setFormData] = useState(null);
     const { setAdminUser } = useUserContext();
     const token = localStorage.getItem('adminToken');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         if (adminData) setFormData(adminData);
@@ -20,7 +21,7 @@ const AdminProfileModal = ({ adminData, setIsModalOpen, updateAdminData }) => {
 
     const handleSave = async () => {
         try {
-            const response = await fetch('/api/admin/users/update', {
+            const response = await fetch(`${apiUrl}/api/admin/users/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

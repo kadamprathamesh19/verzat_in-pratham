@@ -5,13 +5,15 @@ import { toast } from 'react-toastify';
 export const BaseContext = createContext();
 
 export const BaseProvider = ({ children }) => {
+
   const [loading, setLoading] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Add or update base description
   const addBaseDescription = async (description) => {
     try {
       setLoading(true);
-      await axios.post('http://localhost:5000/api/base-description', { description });
+      await axios.post(`${apiUrl}/api/base-description`, { description });
       toast.success('Description saved successfully!');
     } catch (error) {
       console.error('Error saving description:', error);
@@ -24,7 +26,7 @@ export const BaseProvider = ({ children }) => {
   // Fetch base description
   const getBaseDescription = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/base-description/description');
+      const res = await fetch(`${apiUrl}/api/base-description/description`);
       const data = await res.json();
       return data?.description || '';
     } catch (err) {
@@ -38,7 +40,7 @@ export const BaseProvider = ({ children }) => {
   const addCompanyProduct = async (formData) => {
     try {
       setLoading(true);
-      await axios.post('http://localhost:5000/api/base-company-product', formData, {
+      await axios.post(`${apiUrl}/api/base-company-product`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -56,7 +58,7 @@ export const BaseProvider = ({ children }) => {
   const getCompanyProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get('http://localhost:5000/api/base-company-product');
+      const { data } = await axios.get(`${apiUrl}/api/base-company-product`);
       return data;
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -71,7 +73,7 @@ export const BaseProvider = ({ children }) => {
   const updateCompanyProduct = async (id, formData) => {
     try {
       setLoading(true);
-      await axios.put(`http://localhost:5000/api/base-company-product/${id}`, formData, {
+      await axios.put(`${apiUrl}/api/base-company-product/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -89,7 +91,7 @@ export const BaseProvider = ({ children }) => {
   const deleteCompanyProduct = async (id) => {
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:5000/api/base-company-product/${id}`);
+      await axios.delete(`${apiUrl}/api/base-company-product/${id}`);
       toast.success('Product deleted successfully!');
     } catch (error) {
       console.error('Error deleting product:', error);

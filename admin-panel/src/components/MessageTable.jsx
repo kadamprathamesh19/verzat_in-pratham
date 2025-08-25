@@ -4,10 +4,11 @@ import { toast } from 'react-toastify';
 export default function MessageTable() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch('/api/admin/messages');
+      const res = await fetch(`${apiUrl}/api/admin/messages`);
       const data = await res.json();
       setMessages(data);
     } catch (error) {
@@ -26,7 +27,7 @@ export default function MessageTable() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`/api/admin/messages/${id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/messages/${id}`, {
         method: 'DELETE',
       });
 

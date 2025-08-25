@@ -1,6 +1,6 @@
 // src/context/UserContext.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const UserContext = createContext();
 
@@ -10,10 +10,12 @@ export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [adminUser, setAdminUser] = useState(null);
   const token = localStorage.getItem('adminToken');
+  const apiUrl = import.meta.env.VITE_API_URL;
+
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await fetch(`${apiUrl}/api/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -4,10 +4,11 @@ import { toast } from 'react-toastify';
 export default function NewsletterTable() {
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchSubscribers = async () => {
     try {
-      const res = await fetch('/api/admin/newsletter');
+      const res = await fetch(`${apiUrl}/api/admin/newsletter`);
       const data = await res.json();
       setSubscribers(data);
     } catch (error) {
@@ -26,7 +27,7 @@ export default function NewsletterTable() {
     if (!confirm) return;
 
     try {
-      const res = await fetch(`/api/admin/newsletter/${id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/newsletter/${id}`, {
         method: 'DELETE',
       });
 

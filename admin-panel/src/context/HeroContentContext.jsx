@@ -10,11 +10,11 @@ export const HeroContentProvider = ({ children }) => {
     subtitle: "",
     videoUrl: "",
   });
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Fetch hero content from backend
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/hero/hero-content")
+    axios.get(`${apiUrl}/api/hero/hero-content`)
       .then((res) => {
         setHeroContent(res.data);
       })
@@ -26,10 +26,7 @@ export const HeroContentProvider = ({ children }) => {
   // Update hero content in backend
   const updateHeroContent = async (newContent) => {
     try {
-      const res = await axios.put(
-        "http://localhost:5000/api/hero/hero-content-update",
-        newContent
-      );
+      const res = await axios.put(`${apiUrl}/api/hero/hero-content-update`, newContent);
       setHeroContent(res.data);
     } catch (err) {
       console.error("Failed to update hero content:", err);

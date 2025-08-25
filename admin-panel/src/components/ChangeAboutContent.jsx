@@ -21,9 +21,7 @@ const ChangeAboutContent = () => {
   const [editingId, setEditingId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [newVideoUrl, setNewVideoUrl] = useState("");
-
-  const CLOUDINARY_UPLOAD_PRESET = "admin_video_upload";
-  const CLOUDINARY_CLOUD_NAME = "dxojrxx85";
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     setTitleInput(aboutTitle);
@@ -48,7 +46,7 @@ const ChangeAboutContent = () => {
     formData.append("video", file); // backend expects 'video' here
 
     try {
-      const res = await fetch("http://localhost:5000/api/about/upload-video", {
+      const res = await fetch(`${apiUrl}/api/about/upload-video`, {
         method: "POST",
         body: formData,
       });
@@ -76,7 +74,7 @@ const ChangeAboutContent = () => {
 
     try {
       setUploading(true);
-      const res = await fetch("http://localhost:5000/api/about/upload", {
+      const res = await fetch(`${apiUrl}/api/about/upload`, {
         method: "POST",
         body: formData,
       });

@@ -6,8 +6,9 @@ export default function UserTable() {
   const { users, setUsers, fetchUsers } = useUserContext();
   // const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('adminToken');
+  const apiUrl = import.meta.env.VITE_API_URL;
 
-  
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -17,7 +18,7 @@ export default function UserTable() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`/api/admin/users/${id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,7 +41,7 @@ export default function UserTable() {
 
   const promoteUser = async (id) => {
     try {
-      const res = await fetch(`/api/admin/users/promote/${id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/users/promote/${id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,7 +69,7 @@ export default function UserTable() {
 
   const demoteUser = async (id) => {
     try {
-      const res = await fetch(`/api/admin/users/demote/${id}`, {
+      const res = await fetch(`${apiUrl}/api/admin/users/demote/${id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

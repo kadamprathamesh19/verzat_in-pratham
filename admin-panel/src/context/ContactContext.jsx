@@ -9,13 +9,14 @@ export const ContactProvider = ({ children }) => {
   const [contact, setContact] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // Fetch current contact info on mount
   useEffect(() => {
     const fetchContact = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('/api/contact');
+        const res = await axios.get(`${apiUrl}/api/contact`);
         setContact(res.data);
         setError(null);
       } catch (err) {
@@ -34,7 +35,7 @@ export const ContactProvider = ({ children }) => {
     try {
       console.log("Updating contact with data:", updatedData);
 
-      const res = await axios.put('/api/contact', updatedData);
+      const res = await axios.put(`${apiUrl}/api/contact`, updatedData);
       setContact(res.data);
       setError(null);
       toast.success('Contact information updated successfully!');

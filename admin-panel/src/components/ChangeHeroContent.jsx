@@ -10,9 +10,9 @@ const ChangeHeroContent = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  // Replace with your actual Cloudinary config
-  const CLOUDINARY_UPLOAD_PRESET = "admin_video_upload";
-  const CLOUDINARY_CLOUD_NAME = "dxojrxx85";
+  const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
 
   useEffect(() => {
     setTitle(heroContent.title || "");
