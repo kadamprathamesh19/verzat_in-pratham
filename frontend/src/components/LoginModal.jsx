@@ -10,6 +10,7 @@ const LoginModal = ({ onClose }) => {
     password: "",
   });
   const modalRef = useRef(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   // ✅ Input handler
   const handleChange = (e) => {
@@ -49,8 +50,8 @@ const LoginModal = ({ onClose }) => {
     e.preventDefault();
 
     const url = isSignup
-      ? "/api/users/register"
-      : "/api/users/login";
+      ? `${apiUrl}/api/users/register`
+      : `${apiUrl}/api/users/login`;
 
     const payload = isSignup
       ? { name: formData.name, email: formData.email, password: formData.password }
