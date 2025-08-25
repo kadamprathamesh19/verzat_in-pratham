@@ -8,12 +8,14 @@ const Footer = () => {
     const [email, setEmail] = useState("");
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+     const apiUrl = import.meta.env.VITE_API_URL;
+
 
     const handleSubscribe = async (e) => {
         e.preventDefault();
 
         try {
-            const res = await fetch("/api/newsletter/subscribe", {
+            const res = await fetch(`${apiUrl}/api/newsletter/subscribe`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
