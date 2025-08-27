@@ -9,6 +9,7 @@ import SplashLoader from './components/SplashLoader';
 import Footer from './components/Footer';
 import SocialBar from './components/SocialBar';
 import Home from './pages/Home';
+import Career from './pages/career';
 import AIChatButton from './components/ChatBot';
 // import AIModel from './components/AIModel';
 import AIModelTwo from './components/AIModelTwo';
@@ -41,6 +42,7 @@ const App = () => {
 
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/career" element={<Career />} />
                 {/* Add more routes here */}
               </Routes>
 

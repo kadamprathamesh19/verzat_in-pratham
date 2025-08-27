@@ -11,7 +11,7 @@ const socialLinks = [
 
 const SocialBar = () => {
   return (
-    <div className="fixed top-[15%] right-0 z-40 hidden sm:flex flex-col items-center space-y-4 p-2 bg-[#0f172a]/80 backdrop-blur-md rounded-l-xl shadow-lg border-l border-blue-700">
+    <div className="fixed top-[5%] right-0 z-40 hidden sm:flex flex-col items-center space-y-4 p-2 bg-[#0f172a]/80 backdrop-blur-md rounded-l-xl shadow-lg border-l border-blue-700">
       {socialLinks.map(({ href, icon }, idx) => (
         <a
           key={idx}

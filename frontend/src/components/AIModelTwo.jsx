@@ -7,7 +7,7 @@ const AIModelTwo = () => {
     };
 
     return (
-        <div className="fixed bottom-[13%] right-3 sm:bottom-[8%] sm:right-6 z-50">
+        <div className="fixed bottom-[13%] right-3 sm:bottom-[8%] sm:right-3 z-50">
             <div
                 onClick={handleClick}
                 className="relative w-20 h-20 sm:w-32 sm:h-32 cursor-pointer transition-all duration-300 ease-in-out hover:scale-110 hover:brightness-110 flex items-center justify-center"

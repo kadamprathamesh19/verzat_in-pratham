@@ -4,8 +4,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { SiX } from "react-icons/si";
 import profileImg from "../assets/profile.jpg";
+import { useNavigate } from "react-router-dom";
 
-import LoginModal from "./LoginModal";
+// import LoginModal from "./LoginModal";
 import ModalNav from "./ModalNav";
 import heroBg from "../assets/hero-bg.mp4";
 import logoImg from "../assets/Hero/hero-logo.png";
@@ -42,7 +43,8 @@ const socialLinks = [
 
 const Hero = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
+  // const [loginOpen, setLoginOpen] = useState(false);
+  const navigate = useNavigate();
 
   const { heroContent, loading, error } = useContext(HeroContentContext);
 
@@ -116,9 +118,10 @@ const Hero = () => {
           ))}
 
           {/* Profile Icon - Mobile */}
-          <button
+          {/* <button
             type="button"
-            onClick={() => setLoginOpen(true)}
+            // onClick={() => setLoginOpen(true)}
+            onClick={() => navigate('/')}
             aria-label="Profile"
             className="flex items-center ml-2 justify-center w-7 h-7 top-1 rounded-full bg-transparent hover:bg-blue-700 text-white transition duration-300 transform hover:scale-110 md:hidden"
           >
@@ -127,15 +130,16 @@ const Hero = () => {
               alt="Profile"
               className="w-4 h-4 object-cover rounded-full"
             />
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Profile Icon - Desktop */}
-      <div className="hidden md:block absolute top-[3%] right-[0.5%] z-30 cursor-pointer">
+      {/* <div className="hidden md:block absolute top-[3%] right-[0.5%] z-30 cursor-pointer">
         <button
           type="button"
-          onClick={() => setLoginOpen(true)}
+          // onClick={() => setLoginOpen(true)}
+          onClick={() => navigate('/career')}
           aria-label="Profile"
           className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-700 hover:ring-2 ring-blue-600 transition duration-300 transform hover:scale-110"
         >
@@ -145,7 +149,7 @@ const Hero = () => {
             className="w-10 h-10 object-cover"
           />
         </button>
-      </div>
+      </div> */}
 
       {/* Hero Content */}
       <motion.div
@@ -181,18 +185,19 @@ const Hero = () => {
       </motion.div>
 
       {/* Explore More Button */}
-      <motion.button
+
+      {/* <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={scrollToContact}
         className="absolute bottom-8 right-[4%] bg-blue-800 text-white px-6 py-2 rounded-md text-md font-semibold hover:bg-blue-900 transition z-30"
       >
         Explore More
-      </motion.button>
+      </motion.button> */}
 
       {/* Modal Navigation */}
       {modalOpen && <ModalNav onClose={() => setModalOpen(false)} />}
-      {loginOpen && <LoginModal onClose={() => setLoginOpen(false)} />}
+      {/* {loginOpen && <LoginModal onClose={() => setLoginOpen(false)} />} */}
     </section>
   );
 };
