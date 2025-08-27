@@ -66,6 +66,8 @@ const ChangeHeroContent = () => {
     }
 
     try {
+      console.log("Sending to backend:", { title, subtitle, videoUrl });
+
       await updateHeroContent({ title, subtitle, videoUrl });
       toast.success("Hero content updated successfully!");
     } catch (error) {
