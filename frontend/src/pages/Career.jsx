@@ -27,6 +27,7 @@ export default function App() {
         contact: '',
         position: '',
     });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     // Validation error state (Unchanged)
     const [errors, setErrors] = useState({});
@@ -86,12 +87,42 @@ export default function App() {
     };
 
     // Handles form submission (Unchanged)
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;
-        console.log('Form Data Submitted:', { ...formData, resume: fileName });
-        setIsModalOpen(true);
+
+        const form = new FormData();
+        form.append('name', formData.name);
+        form.append('email', formData.email);
+        form.append('contact', formData.contact);
+        form.append('position', formData.position);
+
+        const fileInput = document.getElementById('resume');
+        if (fileInput && fileInput.files[0]) {
+            form.append('resume', fileInput.files[0]);
+        } else {
+            alert('Please upload a resume file.');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${apiUrl}/api/applications`, {
+                method: 'POST',
+                body: form,
+            });
+
+            if (res.ok) {
+                setIsModalOpen(true);
+            } else {
+                const errData = await res.json();
+                alert(errData.message || 'Submission failed.');
+            }
+        } catch (err) {
+            console.error('Submit error:', err);
+            alert('Something went wrong.');
+        }
     };
+
 
     // Closes the modal and resets the form (Unchanged)
     const handleCloseModal = () => {
