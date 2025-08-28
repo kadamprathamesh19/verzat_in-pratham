@@ -9,12 +9,14 @@ import connectDB from './config/db.js';
 import userRoutes from './routes/user/userRoutes.js';
 import messageRoutes from './routes/user/messageRoutes.js';
 import newsletterRoutes from './routes/user/newsletterRoutes.js';
+import applicationRoutes from './routes/user/applicationRoutes.js';
 
 // Admin routes
 import adminUserRoutes from './routes/admin/userRoutes.js';
 import adminMessageRoutes from './routes/admin/messageRoutes.js';
 import adminNewsletterRoutes from './routes/admin/newsletterRoutes.js';
 import adminAuthRoutes from './routes/admin/auth.js';
+import adminApplicationRoutes from './routes/admin/AdminApplicationRoutes.js';
 
 // WEB Routes
 import heroRoutes from './routes/web/heroRoutes.js';
@@ -44,6 +46,7 @@ app.use(xss());              // Sanitize incoming data
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/applications', applicationRoutes);
 
 // Admin Auth
 app.use('/api/admin/auth', adminAuthRoutes);
@@ -52,6 +55,7 @@ app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/users', adminUserRoutes);         
 app.use('/api/admin/messages', adminMessageRoutes);   
 app.use('/api/admin/newsletter', adminNewsletterRoutes); 
+app.use('/api/admin/applications', adminApplicationRoutes);
 
 // WEB Routes
 app.use('/api/hero', heroRoutes);

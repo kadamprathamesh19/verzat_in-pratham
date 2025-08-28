@@ -12,7 +12,7 @@ const Sidebar = () => {
       {!isOpen && (
         <button
           onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 text-white bg-gray-800 p-2 rounded-md focus:outline-none md:hidden"
+          className="fixed top-16 left-1 z-50 text-white bg-gray-800 p-2 rounded-md focus:outline-none md:hidden"
           aria-label="Open sidebar"
         >
           {/* Hamburger icon */}
@@ -59,6 +59,7 @@ const Sidebar = () => {
         <ul className="space-y-4">
           {[
             { to: '/dashboard', label: 'Dashboard' },
+            { to: '/applications', label: 'View Applications' },
             { to: '/users', label: 'Users' },
             { to: '/messages', label: 'Users Messages' },
             { to: '/newsletter', label: 'Newsletter Subscribers' },

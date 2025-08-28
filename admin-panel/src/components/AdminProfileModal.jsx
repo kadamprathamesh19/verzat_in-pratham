@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useUserContext } from '../context/UserContext';
+import { useAdminContext } from '../context/AdminContext'; // ✅ correct import
 
-const AdminProfileModal = ({ adminData, setIsModalOpen, updateAdminData }) => {
+const AdminProfileModal = ({ adminData, setIsModalOpen }) => {
     const [formData, setFormData] = useState(null);
-    const { setAdminUser } = useUserContext();
-    const token = localStorage.getItem('adminToken');
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const { updateAdminProfile, setAdmin } = useAdminContext(); // ✅ using correct context
 
     useEffect(() => {
         if (adminData) setFormData(adminData);
@@ -20,32 +20,24 @@ const AdminProfileModal = ({ adminData, setIsModalOpen, updateAdminData }) => {
     };
 
     const handleSave = async () => {
-        try {
-            const response = await fetch(`${apiUrl}/api/admin/users/update`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                }),
-            });
+        if (newPassword && newPassword !== confirmPassword) {
+            return toast.error('Passwords do not match');
+        }
 
-            const result = await response.json();
-            if (response.ok) {
-                updateAdminData(result.updatedAdmin);
-                localStorage.setItem('user', JSON.stringify(result.updatedAdmin));
-                setIsModalOpen(false);
-                setAdminUser(result.updatedAdmin);
-                toast.success("Profile updated successfully!");
-            } else {
-                toast.error(result.message || 'Failed to update profile.');
-            }
-        } catch (error) {
-            console.error('Update Error:', error);
-            toast.error('An error occurred.');
+        const result = await updateAdminProfile({
+            name: formData.name,
+            email: formData.email,
+            password: newPassword || undefined,
+        });
+
+        if (result.success) {
+            toast.success('Profile updated');
+            setAdmin(result.updatedAdmin); // ✅ update context
+            setIsModalOpen(false);
+            setNewPassword('');
+            setConfirmPassword('');
+        } else {
+            toast.error(result.message || 'Failed to update profile');
         }
     };
 
@@ -55,31 +47,47 @@ const AdminProfileModal = ({ adminData, setIsModalOpen, updateAdminData }) => {
                 <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
 
                 <div className="mb-3">
-                    <label htmlFor="name" className="block mb-1 font-medium text-gray-700">
-                        Name
-                    </label>
+                    <label htmlFor="name" className="block mb-1 font-medium text-gray-700">Name</label>
                     <input
                         type="text"
                         id="name"
                         name="name"
                         value={formData.name || ''}
                         onChange={handleChange}
-                        placeholder="Name"
                         className="w-full p-2 border rounded"
                     />
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="email" className="block mb-1 font-medium text-gray-700">
-                        Email
-                    </label>
+                    <label htmlFor="email" className="block mb-1 font-medium text-gray-700">Email</label>
                     <input
                         type="email"
                         id="email"
                         name="email"
                         value={formData.email || ''}
                         onChange={handleChange}
-                        placeholder="Email"
+                        className="w-full p-2 border rounded"
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="newPassword" className="block mb-1 font-medium text-gray-700">New Password</label>
+                    <input
+                        type="password"
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full p-2 border rounded"
+                    />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="confirmPassword" className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         className="w-full p-2 border rounded"
                     />
                 </div>

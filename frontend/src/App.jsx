@@ -9,6 +9,8 @@ import SplashLoader from './components/SplashLoader';
 import Footer from './components/Footer';
 import SocialBar from './components/SocialBar';
 import Home from './pages/Home';
+import Career from './pages/Career';
+
 import AIChatButton from './components/ChatBot';
 // import AIModel from './components/AIModel';
 import AIModelTwo from './components/AIModelTwo';
@@ -17,6 +19,8 @@ import AIModelTwo from './components/AIModelTwo';
 import { HeroContentProvider } from './context/HeroContentContext';
 import { MissionVisionProvider } from './context/MissionVisionContext';
 import { BaseCompanyProvider } from './context/BaseCompanyContext';
+
+
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -40,7 +44,8 @@ const App = () => {
               <AIModelTwo />
 
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home />} />                     
+                <Route path="/career" element={<Career />} />                     
                 {/* Add more routes here */}
               </Routes>
 

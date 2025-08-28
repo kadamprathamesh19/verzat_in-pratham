@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../context/UserContext';
+import { useAdminContext } from '../context/AdminContext'; // ✅ You missed this import
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { fetchUsers } = useUserContext();
+
+  const { loginAdmin } = useAdminContext(); // ✅ Using AdminContext
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,25 +16,16 @@ function AdminLogin() {
       alert('Please enter email and password');
       return;
     }
+
     setLoading(true);
-    try {
-      const res = await fetch(`${apiUrl}/api/admin/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('adminToken', data.token);
-        await fetchUsers();
-        navigate('/dashboard');
-      } else {
-        alert(data.message || 'Login failed');
-      }
-    } catch (error) {
-      alert('Network error: ' + error.message);
-    }
+    const result = await loginAdmin(email, password);
     setLoading(false);
+
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      alert(result.message || 'Login failed');
+    }
   };
 
   return (
@@ -58,7 +49,9 @@ function AdminLogin() {
       />
       <button
         type="submit"
-        className={`w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 ${
+          loading ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
         disabled={loading}
       >
         {loading ? 'Logging in...' : 'Login'}
@@ -66,6 +59,5 @@ function AdminLogin() {
     </form>
   );
 }
-
 
 export default AdminLogin;
