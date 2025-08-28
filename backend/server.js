@@ -16,6 +16,7 @@ import adminUserRoutes from './routes/admin/userRoutes.js';
 import adminMessageRoutes from './routes/admin/messageRoutes.js';
 import adminNewsletterRoutes from './routes/admin/newsletterRoutes.js';
 import adminAuthRoutes from './routes/admin/auth.js';
+import adminApplicationRoutes from './routes/admin/AdminApplicationRoutes.js';
 
 // WEB Routes
 import heroRoutes from './routes/web/heroRoutes.js';
@@ -54,6 +55,7 @@ app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/users', adminUserRoutes);         
 app.use('/api/admin/messages', adminMessageRoutes);   
 app.use('/api/admin/newsletter', adminNewsletterRoutes); 
+app.use('/api/admin/applications', adminApplicationRoutes);
 
 // WEB Routes
 app.use('/api/hero', heroRoutes);

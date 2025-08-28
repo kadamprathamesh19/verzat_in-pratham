@@ -2,6 +2,7 @@
 import cloudinary from '../config/cloudinary.js';
 import Application from '../models/Application.js';
 
+// --- 1. Submit Application (for Users) ---
 export const submitApplication = async (req, res) => {
     try {
         const { name, email, contact, position } = req.body;
@@ -13,7 +14,7 @@ export const submitApplication = async (req, res) => {
 
         const uploadStream = cloudinary.uploader.upload_stream(
             {
-                resource_type: 'raw', // Required for PDFs
+                resource_type: 'raw',
                 folder: 'resumes',
             },
             async (error, result) => {
@@ -47,3 +48,33 @@ export const submitApplication = async (req, res) => {
     }
 };
 
+
+
+// --- 2. Get All Applications (for Admin) ---
+export const getAllApplications = async (req, res) => {
+    try {
+        const applications = await Application.find().sort({ createdAt: -1 });
+        res.status(200).json(applications);
+    } catch (error) {
+        console.error('Error fetching applications:', error);
+        res.status(500).json({ message: 'Failed to fetch applications' });
+    }
+};
+
+
+// --- 3. Delete Application by ID (for Admin) ---
+export const deleteApplication = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const application = await Application.findByIdAndDelete(id);
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        res.status(200).json({ message: 'Application deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting application:', error);
+        res.status(500).json({ message: 'Failed to delete application' });
+    }
+};
