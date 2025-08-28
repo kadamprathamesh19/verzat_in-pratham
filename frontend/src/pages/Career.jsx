@@ -19,7 +19,7 @@ const SuccessIcon = () => (
 );
 
 // --- Main Career Page Component ---
-export default function App() {
+export default function Career() {
     // State for form inputs (Unchanged)
     const [formData, setFormData] = useState({
         name: '',
