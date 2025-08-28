@@ -40,7 +40,7 @@ const ChangeHeroContent = () => {
 
       if (data.secure_url) {
         setVideoUrl(data.secure_url);
-        toast.success("Video uploaded successfully!");
+        toast.success("Video Previewed successfully!");
       } else {
         throw new Error("Cloudinary upload failed");
       }
