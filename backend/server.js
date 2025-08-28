@@ -9,6 +9,7 @@ import connectDB from './config/db.js';
 import userRoutes from './routes/user/userRoutes.js';
 import messageRoutes from './routes/user/messageRoutes.js';
 import newsletterRoutes from './routes/user/newsletterRoutes.js';
+import applicationRoutes from './routes/user/applicationRoutes.js';
 
 // Admin routes
 import adminUserRoutes from './routes/admin/userRoutes.js';
@@ -44,6 +45,7 @@ app.use(xss());              // Sanitize incoming data
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/applications', applicationRoutes);
 
 // Admin Auth
 app.use('/api/admin/auth', adminAuthRoutes);

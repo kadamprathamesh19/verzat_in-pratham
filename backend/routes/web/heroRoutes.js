@@ -1,5 +1,6 @@
 import express from "express";
 import HeroContent from "../../models/HeroContent.js";
+import { decode } from 'html-entities';
 
 const router = express.Router();
 
@@ -28,6 +29,8 @@ router.put("/hero-content-update", async (req, res) => {
   const { title, subtitle, videoUrl } = req.body;
 
   console.log("Received body in PUT /hero-content-update:", req.body);
+  tit = decode(title);
+  subtitle = decode(subtitle);
 
   try {
     let content = await HeroContent.findOne();
@@ -35,7 +38,7 @@ router.put("/hero-content-update", async (req, res) => {
     if (!content) {
       content = await HeroContent.create({ title, subtitle, videoUrl });
     } else {
-      content.title = title;
+      content.title = tit;
       content.subtitle = subtitle;
 
       if (typeof videoUrl !== "undefined") {
@@ -43,6 +46,7 @@ router.put("/hero-content-update", async (req, res) => {
       }
 
       await content.save();
+      console.log(content);
     }
 
     res.json(content);
