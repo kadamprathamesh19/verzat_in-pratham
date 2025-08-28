@@ -1,13 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { useApplications } from '../context/ApplicationContext'; // adjust path as needed
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
 
 export default function ApplicationList() {
-    const { applications, loading, error } = useApplications();
+    const { applications, loading, error, deleteApplication } = useApplications();
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const navigate = useNavigate();
 
     const filteredApplicants = useMemo(() => {
         return applications.filter(applicant =>
@@ -24,8 +27,16 @@ export default function ApplicationList() {
 
     const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
+    const handleDelete = (applicantId) => {
+        if (window.confirm('Are you sure you want to delete this application?')) {
+            deleteApplication(applicantId);
+            toast.success("Applicant deleted successfully!")
+        }
+    };
+
+
     const handleViewDetails = (applicantId) => {
-        alert(`Navigating to details for applicant ID: ${applicantId}`);
+        navigate(`/admin/applicants/${applicantId}`);
     };
 
     return (
@@ -85,12 +96,20 @@ export default function ApplicationList() {
                                                     <td className="p-4 text-gray-800">{applicant.contact}</td>
                                                     <td className="p-4 text-gray-800">{new Date(applicant.createdAt).toLocaleDateString()}</td>
                                                     <td className="p-4">
-                                                        <button
-                                                            onClick={() => handleViewDetails(applicant._id)}
-                                                            className="px-3 py-1.5 bg-indigo-100 text-indigo-700 font-semibold rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200"
-                                                        >
-                                                            View Details
-                                                        </button>
+                                                        <div className='flex gap-5'>
+                                                            <button
+                                                                onClick={() => handleViewDetails(applicant._id)}
+                                                                className="px-3 py-1.5 bg-indigo-100 text-indigo-700 font-semibold rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200"
+                                                            >
+                                                                View Details
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(applicant._id)}
+                                                                className="px-3 py-1.5 bg-red-100 text-red-700 font-semibold rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))

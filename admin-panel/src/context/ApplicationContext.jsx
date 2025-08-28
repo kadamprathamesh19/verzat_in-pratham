@@ -17,7 +17,7 @@ export const ApplicationProvider = ({ children }) => {
     const getAllApplications = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${apiUrl}/api/applications`); // Update to your actual API endpoint
+            const response = await axios.get(`${apiUrl}/api/admin/applications`); // Update to your actual API endpoint
             setApplications(response.data);
             setError(null);
         } catch (err) {
@@ -31,7 +31,7 @@ export const ApplicationProvider = ({ children }) => {
     // Delete applications from your backend
     const deleteApplication = async (id) => {
         try {
-            await axios.delete(`${apiUrl}/api/applications/${id}`); // Replace with your actual API endpoint
+            await axios.delete(`${apiUrl}/api/admin/applications/${id}`); // Replace with your actual API endpoint
             await getAllApplications(); // Refresh list
         } catch (err) {
             console.error('Failed to delete application:', err);
