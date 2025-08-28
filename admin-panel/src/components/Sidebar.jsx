@@ -59,6 +59,7 @@ const Sidebar = () => {
         <ul className="space-y-4">
           {[
             { to: '/dashboard', label: 'Dashboard' },
+            { to: '/applications', label: 'View Applications' },
             { to: '/users', label: 'Users' },
             { to: '/messages', label: 'Users Messages' },
             { to: '/newsletter', label: 'Newsletter Subscribers' },
