@@ -89,26 +89,41 @@ const Footer = () => {
                     <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
                     <ul className="space-y-2 text-sm">
                         {[
-                            { href: "#services", label: " Our Services" },
+                            { href: "#services", label: "Our Services" },
                             { href: "#about", label: "About Us" },
                             { href: "#mission", label: "Mission & Vision" },
                             { href: "#products", label: "Our Products" },
                             { href: "#contact", label: "Contact Us" },
-                        ].map(({ href, label }) => (
+                            { href: "/career", label: "Career", isPage: true },
+                        ].map(({ href, label, isPage }) => (
                             <li key={label}>
-                                <a
-                                    href={href}
-                                    className="relative inline-block text-gray-400 hover:text-white transition duration-300 
-                                    before:content-[''] before:absolute before:left-0 before:-bottom-1 
-                                    before:w-0 before:h-[2px] before:bg-blue-600 
-                                    before:transition-all before:duration-300 hover:before:w-full"
-                                >
-                                    {label}
-                                </a>
+                                {isPage ? (
+                                    <Link
+                                        to={href}
+                                        className="relative inline-block text-gray-400 hover:text-white transition duration-300 
+            before:content-[''] before:absolute before:left-0 before:-bottom-1 
+            before:w-0 before:h-[2px] before:bg-blue-600 
+            before:transition-all before:duration-300 hover:before:w-full"
+                                    >
+                                        {label}
+                                    </Link>
+                                ) : (
+                                    <a
+                                        href={href}
+                                        className="relative inline-block text-gray-400 hover:text-white transition duration-300 
+            before:content-[''] before:absolute before:left-0 before:-bottom-1 
+            before:w-0 before:h-[2px] before:bg-blue-600 
+            before:transition-all before:duration-300 hover:before:w-full"
+                                    >
+                                        {label}
+                                    </a>
+                                )}
                             </li>
                         ))}
                     </ul>
+
                 </div>
+
 
                 {/* Column 3: Newsletter */}
                 <div>
@@ -134,7 +149,7 @@ const Footer = () => {
                     </form>
 
                     {/* <!-- From Uiverse.io by ParasSalunke --> */}
-                    <div className="flex justify-center sm:justify-start items-start sm:items-center mt-8 ">
+                    {/* <div className="flex justify-center sm:justify-start items-start sm:items-center mt-8 ">
                         <div className="relative group">
                             <Link
                                 to="/career"
@@ -166,7 +181,7 @@ const Footer = () => {
                                 </span>
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>
