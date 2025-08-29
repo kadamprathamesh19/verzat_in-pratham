@@ -64,6 +64,9 @@ const Hero = () => {
     AOS.init({ duration: 1200 });
   }, []);
 
+
+
+
   const scrollToContact = () => {
     const section = document.getElementById("contact");
     if (section) {

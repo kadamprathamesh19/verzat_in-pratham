@@ -3,13 +3,18 @@ import { MdKeyboardArrowUp } from "react-icons/md";
 import { motion } from "framer-motion";
 import logoImg from "../assets/footer/verzat-white-1.png";
 import { toast } from 'react-toastify';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
     const [email, setEmail] = useState("");
     const [showScrollButton, setShowScrollButton] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
     const apiUrl = import.meta.env.VITE_API_URL;
+
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
+
+    
 
 
     const handleSubscribe = async (e) => {
@@ -89,27 +94,17 @@ const Footer = () => {
                     <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
                     <ul className="space-y-2 text-sm">
                         {[
-                            { href: "#services", label: "Our Services" },
-                            { href: "#about", label: "About Us" },
-                            { href: "#mission", label: "Mission & Vision" },
-                            { href: "#products", label: "Our Products" },
-                            { href: "#contact", label: "Contact Us" },
-                            { href: "/career", label: "Career", isPage: true },
-                        ].map(({ href, label, isPage }) => (
+                            { id: "services", label: "Our Services" },
+                            { id: "about", label: "About Us" },
+                            { id: "mission", label: "Mission & Vision" },
+                            { id: "products", label: "Our Products" },
+                            { id: "contact", label: "Contact Us" },
+                        ].map(({ id, label }) => (
                             <li key={label}>
-                                {isPage ? (
-                                    <Link
-                                        to={href}
-                                        className="relative inline-block text-gray-400 hover:text-white transition duration-300 
-            before:content-[''] before:absolute before:left-0 before:-bottom-1 
-            before:w-0 before:h-[2px] before:bg-blue-600 
-            before:transition-all before:duration-300 hover:before:w-full"
-                                    >
-                                        {label}
-                                    </Link>
-                                ) : (
+                                {isHomePage ? (
+                                    // ✅ Native anchor tag on homepage
                                     <a
-                                        href={href}
+                                        href={`#${id}`}
                                         className="relative inline-block text-gray-400 hover:text-white transition duration-300 
             before:content-[''] before:absolute before:left-0 before:-bottom-1 
             before:w-0 before:h-[2px] before:bg-blue-600 
@@ -117,10 +112,37 @@ const Footer = () => {
                                     >
                                         {label}
                                     </a>
+                                ) : (
+                                    // ✅ React Router link from other pages
+                                    <Link
+                                        to={`/#${id}`}
+                                        className="relative inline-block text-gray-400 hover:text-white transition duration-300 
+            before:content-[''] before:absolute before:left-0 before:-bottom-1 
+            before:w-0 before:h-[2px] before:bg-blue-600 
+            before:transition-all before:duration-300 hover:before:w-full"
+                                    >
+                                        {label}
+                                    </Link>
                                 )}
                             </li>
                         ))}
+
+                        {/* Career is a separate page */}
+                        <li>
+                            <Link
+                                to="/career"
+                                className="relative inline-block text-gray-400 hover:text-white transition duration-300 
+        before:content-[''] before:absolute before:left-0 before:-bottom-1 
+        before:w-0 before:h-[2px] before:bg-blue-600 
+        before:transition-all before:duration-300 hover:before:w-full"
+                            >
+                                Career
+                            </Link>
+                        </li>
                     </ul>
+
+
+
 
                 </div>
 
