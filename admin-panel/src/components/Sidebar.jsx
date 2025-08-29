@@ -60,7 +60,7 @@ const Sidebar = () => {
           {[
             { to: '/dashboard', label: 'Dashboard' },
             { to: '/applications', label: 'View Applications' },
-            { to: '/users', label: 'Users' },
+            // { to: '/users', label: 'Users' },
             { to: '/messages', label: 'Users Messages' },
             { to: '/newsletter', label: 'Newsletter Subscribers' },
             { to: '/Change-Hero-Content', label: 'Change Hero Content ' },

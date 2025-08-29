@@ -3,50 +3,51 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import {
-  Users, MessageSquare, Mail, Download
+  Users, MessageSquare, Mail
 } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import { useApplications } from '../context/ApplicationContext';
+import { useAdminContext } from '../context/AdminContext';
 
 const StatCard = ({ title, value, icon: Icon, iconBgColor }) => (
-  <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col justify-between">
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-sm font-medium text-gray-500">{title}</p>
-        <p className="text-3xl font-bold text-gray-800 mt-1">
-          {(value || 0).toLocaleString()}
-        </p>
-      </div>
-      <div className={`p-3 rounded-full ${iconBgColor}`}>
-        <Icon className="h-6 w-6 text-white" />
+    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col justify-between">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <p className="text-3xl font-bold text-gray-800 mt-1">
+            {(value || 0).toLocaleString()}
+          </p>
+        </div>
+        <div className={`p-3 rounded-full ${iconBgColor}`}>
+          <Icon className="h-6 w-6 text-white" />
+        </div>
       </div>
     </div>
-  </div>
-);
-
-const DashboardChart = ({ data }) => (
-  <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 h-96">
-    <h3 className="text-lg font-semibold text-gray-800 mb-4">Activity Overview</h3>
-    <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-        <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="#9ca3af" />
-        <YAxis tick={{ fontSize: 12 }} stroke="#9ca3af" />
-        <Tooltip contentStyle={{
-          background: 'rgba(255,255,255,0.8)',
-          borderRadius: '0.5rem',
-          border: '1px solid #e2e8f0'
-        }} />
-        <Legend wrapperStyle={{ fontSize: '14px' }} />
-        <Line type="monotone" dataKey="applicants" stroke="#4f46e5" strokeWidth={2} dot={{ r: 2 }} name="Applicants" />
-        <Line type="monotone" dataKey="messages" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} name="Messages" />
-        <Line type="monotone" dataKey="subscriptions" stroke="#f59e0b" strokeWidth={2} dot={{ r: 2 }} name="Subscribers" />
-      </LineChart>
-    </ResponsiveContainer>
-  </div>
-);
+  );
+  
+  const DashboardChart = ({ data }) => (
+    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 h-96">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">Activity Overview</h3>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+          <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="#9ca3af" />
+          <YAxis tick={{ fontSize: 12 }} stroke="#9ca3af" />
+          <Tooltip contentStyle={{
+            background: 'rgba(255,255,255,0.8)',
+            borderRadius: '0.5rem',
+            border: '1px solid #e2e8f0'
+          }} />
+          <Legend wrapperStyle={{ fontSize: '14px' }} />
+          <Line type="monotone" dataKey="applicants" stroke="#4f46e5" strokeWidth={2} dot={{ r: 2 }} name="Applicants" />
+          <Line type="monotone" dataKey="messages" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} name="Messages" />
+          <Line type="monotone" dataKey="subscriptions" stroke="#f59e0b" strokeWidth={2} dot={{ r: 2 }} name="Subscribers" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -60,11 +61,8 @@ export default function Dashboard() {
   const [customDate, setCustomDate] = useState('');
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  const { applications, refetch: fetchApplications } = useApplications();
-  const [adminUser] = useState(() => {
-    const stored = localStorage.getItem('adminUser');
-    return stored ? JSON.parse(stored) : null;
-  });
+  const { refetch: fetchApplications } = useApplications();
+  const { admin } = useAdminContext();
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -88,11 +86,12 @@ export default function Dashboard() {
         fromDate = d.toISOString();
       }
 
-      // Re-fetch applications (in case of updates)
-      await fetchApplications();
+      // ✅ Call the refetch function and capture its returned data.
+      // ✅ The `|| []` ensures this will never be undefined, preventing crashes.
+      const freshApplications = (await fetchApplications()) || [];
 
-      // Filtered applicants
-      const filteredApps = applications.filter(app =>
+      // ✅ Use the fresh data for filtering.
+      const filteredApps = freshApplications.filter(app =>
         new Date(app.createdAt) >= new Date(fromDate)
       );
 
@@ -120,7 +119,7 @@ export default function Dashboard() {
         newsletters: newsletters.length
       });
 
-      // Group data
+      // Group data for the chart
       const grouped = {};
       const accumulate = (itemArr, key) => {
         itemArr.forEach(item => {
@@ -189,8 +188,7 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold text-gray-800">
               Welcome Back,{' '}
               <span className="text-blue-600">
-                {adminUser ? adminUser.name : 'Admin'}
-                !
+                {admin ? admin.name : 'Admin'}!
               </span>
             </h1>
             <p className="mt-1 text-gray-900">

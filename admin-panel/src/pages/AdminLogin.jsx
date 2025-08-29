@@ -33,25 +33,32 @@ function AdminLogin() {
       <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
       <input
         type="email"
+        name="email"
+        id="admin-email"
         className="w-full border p-2 mb-4 rounded"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         disabled={loading}
+        autoComplete="email"
       />
+
       <input
         type="password"
+        name="password"
+        id="admin-password"
         className="w-full border p-2 mb-4 rounded"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         disabled={loading}
+        autoComplete="current-password"
       />
+
       <button
         type="submit"
-        className={`w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 ${
-          loading ? 'opacity-50 cursor-not-allowed' : ''
-        }`}
+        className={`w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 ${loading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         disabled={loading}
       >
         {loading ? 'Logging in...' : 'Login'}

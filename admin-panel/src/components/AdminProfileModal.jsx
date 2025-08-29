@@ -1,16 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // ✅ 1. Import useRef
 import { toast } from 'react-toastify';
-import { useAdminContext } from '../context/AdminContext'; // ✅ correct import
+import { useAdminContext } from '../context/AdminContext';
 
 const AdminProfileModal = ({ adminData, setIsModalOpen }) => {
     const [formData, setFormData] = useState(null);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const { updateAdminProfile, setAdmin } = useAdminContext(); // ✅ using correct context
+    const { updateAdminProfile, setAdmin } = useAdminContext();
+
+    const modalRef = useRef(); // ✅ 2. Create a ref for the modal content
 
     useEffect(() => {
         if (adminData) setFormData(adminData);
     }, [adminData]);
+
+    // ✅ 3. Add a useEffect to handle outside clicks
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // If the ref exists and the click was outside the ref's element
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                setIsModalOpen(false);
+            }
+        };
+
+        // Add event listener when the modal mounts
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Clean up the event listener when the modal unmounts
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [setIsModalOpen]); // Re-run effect if setIsModalOpen changes
 
     if (!formData) return null;
 
@@ -32,7 +52,7 @@ const AdminProfileModal = ({ adminData, setIsModalOpen }) => {
 
         if (result.success) {
             toast.success('Profile updated');
-            setAdmin(result.updatedAdmin); // ✅ update context
+            setAdmin(result.updatedAdmin);
             setIsModalOpen(false);
             setNewPassword('');
             setConfirmPassword('');
@@ -43,8 +63,9 @@ const AdminProfileModal = ({ adminData, setIsModalOpen }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-md w-[400px]">
-                <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
+            {/* ✅ 4. Attach the ref to the modal content div */}
+            <div ref={modalRef} className="bg-white p-6 rounded-md w-[400px]">
+                <h2 className="text-2xl text-center text-blue-700 font-bold mb-4">Edit Profile</h2>
 
                 <div className="mb-3">
                     <label htmlFor="name" className="block mb-1 font-medium text-gray-700">Name</label>
@@ -97,7 +118,7 @@ const AdminProfileModal = ({ adminData, setIsModalOpen }) => {
                         Cancel
                     </button>
                     <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded">
-                        Save
+                        Update
                     </button>
                 </div>
             </div>
