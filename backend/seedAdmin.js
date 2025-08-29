@@ -14,12 +14,12 @@ const createAdmin = async () => {
     if (existing) {
       console.log('Admin already exists');
     } else {
-      const hashedPassword = await bcrypt.hash('123456789', 10);
+      // const hashedPassword = await bcrypt.hash('123456789', 10);
 
       await Admin.create({
         name: 'Admin',
         email: 'admin@verzat.com',
-        password: hashedPassword,
+        password: '123456789',
       });
 
       console.log('Admin user created');
