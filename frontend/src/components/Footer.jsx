@@ -171,7 +171,7 @@ const Footer = () => {
                     </form>
 
                     {/* <!-- From Uiverse.io by ParasSalunke --> */}
-                    {/* <div className="flex justify-center sm:justify-start items-start sm:items-center mt-8 ">
+                    <div className="flex justify-center sm:justify-start items-start sm:items-center mt-8 ">
                         <div className="relative group">
                             <Link
                                 to="/career"
@@ -203,7 +203,7 @@ const Footer = () => {
                                 </span>
                             </Link>
                         </div>
-                    </div> */}
+                    </div>
 
                 </div>
             </div>

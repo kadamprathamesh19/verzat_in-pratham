@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react"; // UPDATED: Added useMemo
 import { motion } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { SiX } from "react-icons/si";
 import profileImg from "../assets/profile.jpg";
 import { useNavigate } from "react-router-dom";
+import { decode } from "html-entities"; // UPDATED: Added decoder
 
 // import LoginModal from "./LoginModal";
 import ModalNav from "./ModalNav";
@@ -48,10 +49,20 @@ const Hero = () => {
 
   const { heroContent, loading, error } = useContext(HeroContentContext);
 
-  // Default title if none from backend
-  const rawTitle = heroContent?.title || "Pioneering Innovation in R&D";
+  // UPDATED: Decode the raw content from the context using useMemo for efficiency
+  const decodedTitle = useMemo(
+    () => (heroContent?.title ? decode(heroContent.title) : ""),
+    [heroContent?.title]
+  );
+  const decodedSubtitle = useMemo(
+    () => (heroContent?.subtitle ? decode(heroContent.subtitle) : ""),
+    [heroContent?.subtitle]
+  );
 
-  // Split the title into words
+  // UPDATED: Use the decoded title for splitting logic
+  const rawTitle = decodedTitle || "Pioneering Innovation in R&D";
+
+  // Split the title into words (this logic remains the same)
   const words = rawTitle.trim().split(" ");
 
   // Example: Highlight second word (or fallback)
@@ -83,7 +94,7 @@ const Hero = () => {
 
       <video
         className="absolute top-0 left-0 w-full h-full object-cover z-0 blur-md"
-        src={heroContent.videoUrl || heroBg}  // use backend videoUrl, fallback to local
+        src={heroContent.videoUrl || heroBg}  // use backend videoUrl, fallback to local
         autoPlay
         muted
         loop
@@ -122,37 +133,37 @@ const Hero = () => {
 
           {/* Profile Icon - Mobile */}
           {/* <button
-            type="button"
-            // onClick={() => setLoginOpen(true)}
-            onClick={() => navigate('/')}
-            aria-label="Profile"
-            className="flex items-center ml-2 justify-center w-7 h-7 top-1 rounded-full bg-transparent hover:bg-blue-700 text-white transition duration-300 transform hover:scale-110 md:hidden"
-          >
-            <img
-              src={profileImg}
-              alt="Profile"
-              className="w-4 h-4 object-cover rounded-full"
-            />
-          </button> */}
+            type="button"
+            // onClick={() => setLoginOpen(true)}
+            onClick={() => navigate('/')}
+            aria-label="Profile"
+            className="flex items-center ml-2 justify-center w-7 h-7 top-1 rounded-full bg-transparent hover:bg-blue-700 text-white transition duration-300 transform hover:scale-110 md:hidden"
+          >
+            <img
+              src={profileImg}
+              alt="Profile"
+              className="w-4 h-4 object-cover rounded-full"
+            />
+          </button> */}
         </div>
       </div>
 
       {/* Profile Icon - Desktop */}
       {/* <div className="hidden md:block absolute top-[3%] right-[0.5%] z-30 cursor-pointer">
-        <button
-          type="button"
-          // onClick={() => setLoginOpen(true)}
-          onClick={() => navigate('/career')}
-          aria-label="Profile"
-          className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-700 hover:ring-2 ring-blue-600 transition duration-300 transform hover:scale-110"
-        >
-          <img
-            src={profileImg}
-            alt="Profile"
-            className="w-10 h-10 object-cover"
-          />
-        </button>
-      </div> */}
+        <button
+          type="button"
+          // onClick={() => setLoginOpen(true)}
+          onClick={() => navigate('/career')}
+          aria-label="Profile"
+          className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-700 hover:ring-2 ring-blue-600 transition duration-300 transform hover:scale-110"
+        >
+          <img
+            src={profileImg}
+            alt="Profile"
+            className="w-10 h-10 object-cover"
+          />
+        </button>
+      </div> */}
 
       {/* Hero Content */}
       <motion.div
@@ -179,10 +190,11 @@ const Hero = () => {
               <span className="block mt-1">{titlePart2}</span>
             </h1>
 
-
-            <p className="text-lg md:text-xl text-gray-300 mb-6">
-              {heroContent.subtitle}
-            </p>
+            {/* UPDATED: Use dangerouslySetInnerHTML for the subtitle */}
+            <p
+              className="text-lg md:text-xl text-gray-300 mb-6"
+              dangerouslySetInnerHTML={{ __html: decodedSubtitle }}
+            />
           </>
         )}
       </motion.div>
@@ -190,13 +202,13 @@ const Hero = () => {
       {/* Explore More Button */}
 
       {/* <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={scrollToContact}
-        className="absolute bottom-8 right-[4%] bg-blue-800 text-white px-6 py-2 rounded-md text-md font-semibold hover:bg-blue-900 transition z-30"
-      >
-        Explore More
-      </motion.button> */}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={scrollToContact}
+        className="absolute bottom-8 right-[4%] bg-blue-800 text-white px-6 py-2 rounded-md text-md font-semibold hover:bg-blue-900 transition z-30"
+      >
+        Explore More
+      </motion.button> */}
 
       {/* Modal Navigation */}
       {modalOpen && <ModalNav onClose={() => setModalOpen(false)} />}
