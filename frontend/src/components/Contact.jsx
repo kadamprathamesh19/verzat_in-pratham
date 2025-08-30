@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { decode } from "html-entities"; // UPDATED: Added decoder
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -24,12 +25,6 @@ const extractSrcFromIframe = (iframeString) => {
   return match ? match[1] : null;
 };
 
-const decodeHtmlEntities = (text) => {
-  const textarea = document.createElement("textarea");
-  textarea.innerHTML = text;
-  return textarea.value;
-};
-
 const ContactForm = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -48,7 +43,7 @@ const ContactForm = () => {
       }
     };
     fetchContact();
-  }, []);
+  }, [apiUrl]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -79,29 +74,40 @@ const ContactForm = () => {
     }
   };
 
-  // Decode HTML entities in the extracted src URL
+  // UPDATED: Decode all dynamic text fields from the contact object
+  const decodedContact = useMemo(() => {
+    if (!contact) return {};
+    return {
+      pageTitle: decode(contact.pageTitle || ""),
+      address: decode(contact.address || ""),
+      email: decode(contact.email || ""),
+      mapEmbedUrl: contact.mapEmbedUrl || "", // Map URL doesn't need decoding itself, its content does
+    };
+  }, [contact]);
+
+
   const mapSrc = useMemo(() => {
-    if (!contact?.mapEmbedUrl) return null;
+    if (!decodedContact?.mapEmbedUrl) return null;
 
     let src = null;
-    if (contact.mapEmbedUrl.trim().startsWith("<iframe")) {
-      src = extractSrcFromIframe(contact.mapEmbedUrl);
+    if (decodedContact.mapEmbedUrl.trim().startsWith("<iframe")) {
+      src = extractSrcFromIframe(decodedContact.mapEmbedUrl);
     } else {
-      src = contact.mapEmbedUrl;
+      src = decodedContact.mapEmbedUrl;
     }
 
     if (src) {
-      src = decodeHtmlEntities(src);
+      src = decode(src); // Decode the extracted src URL
     }
 
     return src;
-  }, [contact?.mapEmbedUrl]);
+  }, [decodedContact?.mapEmbedUrl]);
 
   // Split pageTitle for styled rendering
   const renderStyledTitle = () => {
-    if (!contact?.pageTitle) return null;
+    if (!decodedContact?.pageTitle) return null;
 
-    const words = contact.pageTitle.trim().split(" ");
+    const words = decodedContact.pageTitle.trim().split(" ");
     const firstTwo = words.slice(0, 2).join(" ");
     const rest = words.slice(2).join(" ");
 
@@ -140,9 +146,10 @@ const ContactForm = () => {
           >
 
             <div className="bg-[#1e293b] p-6 rounded-xl shadow-lg text-base font-medium text-gray-100 mb-10 space-y-2">
-              <p>{contact?.address || "Loading address..."}</p>
+              {/* UPDATED: Use dangerouslySetInnerHTML for address and email */}
+              <p dangerouslySetInnerHTML={{ __html: decodedContact.address || "Loading address..." }} />
               <br />
-              <p>{contact?.email || "Loading email..."}</p>
+              <p dangerouslySetInnerHTML={{ __html: decodedContact.email || "Loading email..." }} />
               {/* <p>{contact?.phone || "Loading phone..."}</p> */}
             </div>
 

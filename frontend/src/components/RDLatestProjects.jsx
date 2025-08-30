@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { decode } from "html-entities";
 
 
 const cardVariants = {
@@ -35,6 +36,10 @@ export default function RDProjectsSection() {
   const [direction, setDirection] = useState(1);
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  // Decode main section title and description for display
+  const decodedSectionTitle = useMemo(() => decode(sectionTitle || ""), [sectionTitle]);
+  const decodedSectionDescription = useMemo(() => decode(sectionDescription || ""), [sectionDescription]);
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -63,7 +68,7 @@ export default function RDProjectsSection() {
     if (isPaused || productsData.length === 0) return;
     const timer = setInterval(() => handleChange(1), 5000);
     return () => clearInterval(timer);
-  }, [isPaused, productsData]);
+  }, [isPaused, productsData, index]); // Added index to dependencies to reset timer on manual change
 
   const handleChange = (dir) => {
     if (!productsData.length) return;
@@ -73,7 +78,7 @@ export default function RDProjectsSection() {
 
   // Split the title: first word black, rest blue
   const splitTitle = () => {
-    const words = sectionTitle.trim().split(" ");
+    const words = decodedSectionTitle.trim().split(" ");
     if (words.length === 0) return null;
     const firstWord = words[0];
     const rest = words.slice(1).join(" ");
@@ -81,6 +86,7 @@ export default function RDProjectsSection() {
   };
 
   const { firstWord, rest } = splitTitle() || { firstWord: "", rest: "" };
+  const currentProduct = productsData[index];
 
   return (
     <section
@@ -103,9 +109,10 @@ export default function RDProjectsSection() {
             <span className="text-blue-600">{rest}</span>
           </h2>
           {sectionDescription && (
-            <p className="text-gray-900 text-md mb-4 whitespace-pre-line">
-              {sectionDescription}
-            </p>
+            <p
+              className="text-gray-900 text-md mb-4 whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: decodedSectionDescription }}
+            />
           )}
           {productsData.length > 0 && (
             <p className="text-blue-700 text-md font-semibold">
@@ -114,7 +121,7 @@ export default function RDProjectsSection() {
               :{" "}
               {productsData.map((p, i) => (
                 <span key={p._id || p.id}>
-                  {p.title}
+                  {decode(p.title || "")}
                   {i < productsData.length - 2 ? ", " : ""}
                   {i === productsData.length - 2 ? " & " : ""}
                 </span>
@@ -157,30 +164,31 @@ export default function RDProjectsSection() {
               exit="exit"
               className="relative w-full rounded-lg p-4 sm:p-6 flex flex-col justify-between shadow-xl max-h-[90vh] overflow-hidden border"
             >
-              {productsData[index] && (
+              {currentProduct && (
                 <>
                   <div className="overflow-y-auto pr-2 max-h-[75vh]">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8 px-4 sm:px-6 py-8 sm:py-10 text-center md:text-left bg-white text-black rounded-lg shadow-md">
                       <div className="md:w-1/2 w-full flex justify-center mb-6 md:mb-0">
                         <img
-                          src={productsData[index].image}
-                          alt={productsData[index].title}
+                          src={currentProduct.image}
+                          alt={decode(currentProduct.title || "")}
                           className="w-full max-w-xs mx-auto"
                         />
                       </div>
                       <div className="md:w-1/2 w-full">
                         <h2 className="text-4xl font-bold text-blue-700 mb-4">
-                          {productsData[index].title}
+                          {decode(currentProduct.title || "")}
                         </h2>
-                        <p className="text-sm text-gray-800 mb-3 leading-relaxed">
-                          {productsData[index].description}
-                        </p>
+                        <p
+                          className="text-sm text-gray-800 mb-3 leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: decode(currentProduct.description || "") }}
+                        />
                         <p className="text-lg font-semibold mb-2 text-blue-700">
                           Key features include:
                         </p>
                         <ul className="text-base text-black space-y-1 text-left">
-                          {productsData[index].features.map((f, i) => (
-                            <li key={i}>{f}</li>
+                          {currentProduct.features.map((f, i) => (
+                            <li key={i}>{decode(f || "")}</li>
                           ))}
                         </ul>
                       </div>
@@ -190,20 +198,19 @@ export default function RDProjectsSection() {
                   <div className="flex justify-center mt-4 mb-6">
                     <button
                       onClick={() => {
-                        const link = productsData[index]?.link;
+                        const link = currentProduct?.link;
                         if (!link || !link.startsWith("http")) {
                           toast.info("Link not available or coming soon!");
                           return;
                         }
-
                         window.open(link, "_blank", "noopener,noreferrer");
                       }}
                       className={`inline-block px-6 py-2 rounded-md font-semibold ${
-                        productsData[index]?.link && productsData[index].link.startsWith("http")
+                        currentProduct?.link && currentProduct.link.startsWith("http")
                           ? "bg-blue-800 hover:bg-blue-700"
                           : "bg-blue-400 cursor-not-allowed"
                       } text-white transition`}
-                      disabled={!productsData[index]?.link || !productsData[index].link.startsWith("http")}
+                      disabled={!currentProduct?.link || !currentProduct.link.startsWith("http")}
                     >
                       Learn More →
                     </button>
@@ -217,3 +224,4 @@ export default function RDProjectsSection() {
     </section>
   );
 }
+

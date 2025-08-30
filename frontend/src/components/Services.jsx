@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react"; // UPDATED: Added useMemo
 import { motion } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { fetchSectionDescription, fetchSectionTitle } from "../services/servicesApi";
 import ThreeLogoBackground from "./ThreeLogoBackground";
+import { decode } from "html-entities"; // UPDATED: Added decoder
 
 import {
     FaRobot,
@@ -31,6 +32,10 @@ const Services = () => {
     const [title, setTitle] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
 
+    // UPDATED: Decode title and description using useMemo for efficiency
+    const decodedTitle = useMemo(() => decode(title || ""), [title]);
+    const decodedDescription = useMemo(() => decode(description || ""), [description]);
+
     useEffect(() => {
         AOS.init({ duration: 800, easing: "ease-in-out", once: true });
 
@@ -54,8 +59,9 @@ const Services = () => {
 
     // Split title into words and style last word in blue
     const renderTitle = () => {
-        if (!title) return "Loading...";
-        const words = title.trim().split(" ");
+        // UPDATED: Use the decodedTitle for splitting logic
+        if (!decodedTitle) return "Loading...";
+        const words = decodedTitle.trim().split(" ");
         const lastWord = words.pop();
         return (
             <>
@@ -87,8 +93,9 @@ const Services = () => {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.3 }}
+                    // UPDATED: Use decodedDescription and render with dangerouslySetInnerHTML
+                    dangerouslySetInnerHTML={{ __html: decodedDescription || "Loading description..." }}
                 >
-                    {description || "Loading description..."}
                 </motion.p>
             </div>
 
@@ -104,8 +111,10 @@ const Services = () => {
                         <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                             {iconMap[service.icon] || <FaCode className="text-4xl text-blue-800" />}
                         </div>
-                        <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                        <p className="text-gray-600">{service.desc}</p>
+                        {/* UPDATED: Decode the individual service title */}
+                        <h3 className="text-xl font-semibold mb-2">{decode(service.title || "")}</h3>
+                        {/* UPDATED: Decode the individual service description */}
+                        <p className="text-gray-600">{decode(service.desc || "")}</p>
                     </motion.div>
                 ))}
             </div>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react"; // UPDATED: Added useMemo
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { decode } from "html-entities"; // UPDATED: Added decoder
 
 import { fetchAboutDescription, fetchAboutValues } from "../services/aboutServices";
 
@@ -12,6 +13,10 @@ const WhyVerzat = () => {
 
   // New state for video URL
   const [videoUrl, setVideoUrl] = useState("");
+
+  // UPDATED: Decode the main title and description for display
+  const decodedAboutTitle = useMemo(() => decode(aboutTitle || ""), [aboutTitle]);
+  const decodedAboutDesc = useMemo(() => decode(aboutDesc || ""), [aboutDesc]);
 
   useEffect(() => {
     AOS.init({ duration: 1200, once: true });
@@ -106,8 +111,13 @@ const WhyVerzat = () => {
       {/* Foreground Content */}
       <div className="relative z-20">
         <div className="text-center mb-10 max-w-4xl mx-auto">
-          {renderStyledTitle(aboutTitle)}
-          <p className="text-gray-300 text-lg leading-relaxed">{aboutDesc}</p>
+          {/* UPDATED: Use the decoded title */}
+          {renderStyledTitle(decodedAboutTitle)}
+          {/* UPDATED: Use dangerouslySetInnerHTML for the description */}
+          <p
+            className="text-gray-300 text-lg leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: decodedAboutDesc }}
+          />
         </div>
 
         {values.length === 0 ? (
@@ -116,9 +126,8 @@ const WhyVerzat = () => {
           values.map((item, index) => (
             <div
               key={item._id || index}
-              className={`flex flex-col md:flex-row ${
-                index % 2 !== 0 ? "md:flex-row-reverse" : ""
-              } items-center gap-8 md:gap-24`}
+              className={`flex flex-col md:flex-row ${index % 2 !== 0 ? "md:flex-row-reverse" : ""
+                } items-center gap-8 md:gap-24`}
             >
               {/* Text */}
               <div
@@ -127,9 +136,14 @@ const WhyVerzat = () => {
               >
                 <h3 className="text-2xl font-semibold mb-3">
                   <span className="text-white">● </span>
-                  {item.title}
+                  {/* UPDATED: Decode the item title */}
+                  {decode(item.title || "")}
                 </h3>
-                <p className="text-gray-300 text-lg leading-relaxed">{item.desc}</p>
+                {/* UPDATED: Use dangerouslySetInnerHTML for the item description */}
+                <p
+                  className="text-gray-300 text-lg leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: decode(item.desc || "") }}
+                />
               </div>
 
               {/* Image */}
