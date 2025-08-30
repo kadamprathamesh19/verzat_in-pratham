@@ -1,4 +1,4 @@
-// routes/web/heroRoutes.js
+// FILE: routes/web/heroRoutes.js
 
 import express from "express";
 import HeroContent from "../../models/HeroContent.js";
@@ -6,30 +6,45 @@ import { decode } from 'html-entities';
 
 const router = express.Router();
 
-// ... (your GET route remains the same) ...
+// === VERIFY THIS GET ROUTE EXISTS AND IS CORRECT ===
+router.get("/hero-content", async (req, res) => {
+  try {
+    let content = await HeroContent.findOne();
 
-// PUT update hero content
+    if (!content) {
+      // If no content, create and return default content
+      content = await HeroContent.create({
+        title: "Pioneering Innovation in R&D",
+        subtitle: "Welcome to Verzat Research & Development — where breakthrough ideas become real-world impact.",
+        videoUrl: "", 
+      });
+    }
+    res.json(content);
+  } catch (err) {
+    console.error("Error fetching hero content:", err);
+    res.status(500).json({ message: "Server error while fetching hero content" });
+  }
+});
+
+// === THIS IS THE PUT ROUTE WE FIXED EARLIER ===
 router.put("/hero-content-update", async (req, res) => {
-  // req.body contains the sanitized strings from the xss() middleware
   const { title, subtitle, videoUrl } = req.body;
 
   try {
-    // Decode the sanitized strings back to their original form
     const decodedTitle = decode(title);
     const decodedSubtitle = decode(subtitle);
 
     let content = await HeroContent.findOne();
 
     if (!content) {
-      content = await HeroContent.create({
-        title: decodedTitle,
-        subtitle: decodedSubtitle,
-        videoUrl
+      content = await HeroContent.create({ 
+        title: decodedTitle, 
+        subtitle: decodedSubtitle, 
+        videoUrl 
       });
     } else {
       content.title = decodedTitle;
       content.subtitle = decodedSubtitle;
-
       if (typeof videoUrl !== "undefined") {
         content.videoUrl = videoUrl;
       }
@@ -38,7 +53,7 @@ router.put("/hero-content-update", async (req, res) => {
     res.json(content);
   } catch (err) {
     console.error("Error updating hero content:", err);
-    res.status(500).json({ message: "Update failed" });
+    res.status(500).json({ message: "Update failed due to a server error" });
   }
 });
 
