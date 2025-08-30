@@ -1,3 +1,4 @@
+import { decode } from 'html-entities';
 import AboutValue from '../models/AboutValue.js';
 
 // GET all values
@@ -18,7 +19,11 @@ export const addValue = async (req, res) => {
       return res.status(400).json({ message: 'All fields required' });
     }
 
-    const newValue = await AboutValue.create({ title, desc, image });
+    // Decode text fields before creating
+    const decodedTitle = decode(title);
+    const decodedDesc = decode(desc);
+
+    const newValue = await AboutValue.create({ title: decodedTitle, desc: decodedDesc, image });
     res.status(201).json(newValue);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -29,7 +34,20 @@ export const addValue = async (req, res) => {
 export const updateValue = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = await AboutValue.findByIdAndUpdate(id, req.body, {
+    const { title, desc } = req.body;
+
+    // Create an update object to hold potentially decoded values
+    const updateData = { ...req.body };
+
+    // Decode text fields if they exist in the request body
+    if (title) {
+      updateData.title = decode(title);
+    }
+    if (desc) {
+      updateData.desc = decode(desc);
+    }
+
+    const updated = await AboutValue.findByIdAndUpdate(id, updateData, {
       new: true,
     });
     if (!updated) return res.status(404).json({ message: 'Not found' });

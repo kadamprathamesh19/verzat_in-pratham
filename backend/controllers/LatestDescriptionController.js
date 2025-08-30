@@ -1,3 +1,4 @@
+import { decode } from 'html-entities';
 import LatestDescription from '../models/LatestDescription.js';
 
 // ✅ GET latest-section
@@ -5,7 +6,7 @@ export const getLatestDescription = async (req, res) => {
   try {
     let doc = await LatestDescription.findOne().sort({ createdAt: -1 });
     if (!doc) {
-      doc = await LatestDescription.create({ description: '' });
+      doc = await LatestDescription.create({ description: '', sectionTitle: 'Verzat R&D Lab' });
     }
     res.json(doc); // Now returning full object (title, image, description)
   } catch (err) {
@@ -20,9 +21,11 @@ export const updateLatestDescription = async (req, res) => {
 
     // Build update object dynamically
     const updateData = {};
-    if (sectionTitle !== undefined) updateData.sectionTitle = sectionTitle;
+    
+    // Decode text fields before adding them to the update object
+    if (sectionTitle !== undefined) updateData.sectionTitle = decode(sectionTitle);
     if (sectionImage !== undefined) updateData.sectionImage = sectionImage;
-    if (description !== undefined) updateData.description = description;
+    if (description !== undefined) updateData.description = decode(description);
 
     // If nothing valid to update, return error
     if (Object.keys(updateData).length === 0) {
@@ -41,5 +44,3 @@ export const updateLatestDescription = async (req, res) => {
     res.status(500).json({ error: 'Server error during update' });
   }
 };
-
-

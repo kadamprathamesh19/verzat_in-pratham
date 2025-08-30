@@ -1,3 +1,4 @@
+import { decode } from 'html-entities';
 import LatestProduct from '../models/LatestProduct.js';
 
 export const getLatestProducts = async (req, res) => {
@@ -19,11 +20,17 @@ export const addLatestProduct = async (req, res) => {
       return res.status(400).json({ error: 'Product link is required' });
     }
 
+    // Decode text fields before creating
+    const decodedTitle = decode(title || '');
+    const decodedDescription = decode(description || '');
+    // Features is an array, so map over it to decode each item
+    const decodedFeatures = Array.isArray(features) ? features.map(f => decode(f || '')) : [];
+
     const product = await LatestProduct.create({
       image: req.file.path,
-      title,
-      description,
-      features,
+      title: decodedTitle,
+      description: decodedDescription,
+      features: decodedFeatures,
       link,
     });
 
@@ -38,8 +45,21 @@ export const updateLatestProduct = async (req, res) => {
     const { id } = req.params;
     const { title, description, features, link } = req.body;
 
-    const updateData = { title, description, features, link };
+    const updateData = {};
+    if (link) updateData.link = link;
     if (req.file?.path) updateData.image = req.file.path;
+
+    // Decode text fields if they exist in the body
+    if (title) {
+        updateData.title = decode(title);
+    }
+    if (description) {
+        updateData.description = decode(description);
+    }
+    if (features && Array.isArray(features)) {
+        updateData.features = features.map(f => decode(f || ''));
+    }
+
 
     const updated = await LatestProduct.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -65,5 +85,3 @@ export const deleteLatestProduct = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-

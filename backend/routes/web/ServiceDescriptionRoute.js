@@ -1,4 +1,5 @@
 import express from "express";
+import { decode } from 'html-entities';
 import ServicePageDescription from "../../models/ServicePageDescription.js";
 
 const router = express.Router();
@@ -26,12 +27,15 @@ router.put("/title", async (req, res) => {
     return res.status(400).json({ error: "Title is required and must be a string." });
   }
 
+  // Decode the sanitized title before saving
+  const decodedTitle = decode(title);
+
   try {
     let doc = await ServicePageDescription.findOne();
     if (!doc) {
-      doc = new ServicePageDescription({ title, description: "" }); // Initialize description to avoid required error
+      doc = new ServicePageDescription({ title: decodedTitle, description: "" }); // Initialize description to avoid required error
     } else {
-      doc.title = title;
+      doc.title = decodedTitle;
     }
 
     await doc.save();
@@ -63,12 +67,15 @@ router.put("/description", async (req, res) => {
     return res.status(400).json({ error: "Description is required and must be a string." });
   }
 
+  // Decode the sanitized description before saving
+  const decodedDescription = decode(description);
+
   try {
     let doc = await ServicePageDescription.findOne();
     if (!doc) {
-      doc = new ServicePageDescription({ description });
+      doc = new ServicePageDescription({ description: decodedDescription });
     } else {
-      doc.description = description;
+      doc.description = decodedDescription;
     }
 
     await doc.save();
@@ -80,3 +87,4 @@ router.put("/description", async (req, res) => {
 
 
 export default router;
+

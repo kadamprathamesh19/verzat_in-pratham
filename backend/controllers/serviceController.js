@@ -1,3 +1,4 @@
+import { decode } from 'html-entities';
 import Service from "../models/Service.js"; // Note the .js extension is required in ESM
 
 // @desc Get all services
@@ -14,7 +15,12 @@ export const getServices = async (req, res) => {
 export const createService = async (req, res) => {
   try {
     const { title, desc, icon } = req.body;
-    const newService = await Service.create({ title, desc, icon });
+
+    // Decode sanitized text fields before creating
+    const decodedTitle = decode(title || '');
+    const decodedDesc = decode(desc || '');
+
+    const newService = await Service.create({ title: decodedTitle, desc: decodedDesc, icon });
     res.status(201).json(newService);
   } catch (err) {
     res.status(400).json({ message: "Failed to create service." });
@@ -25,7 +31,19 @@ export const createService = async (req, res) => {
 export const updateService = async (req, res) => {
   try {
     const { id } = req.params;
-    const updated = await Service.findByIdAndUpdate(id, req.body, { new: true });
+    const { title, desc } = req.body;
+
+    const updateData = { ...req.body };
+
+    // Decode text fields if they exist in the body
+    if (title) {
+      updateData.title = decode(title);
+    }
+    if (desc) {
+      updateData.desc = decode(desc);
+    }
+
+    const updated = await Service.findByIdAndUpdate(id, updateData, { new: true });
     if (!updated) return res.status(404).json({ message: "Service not found" });
     res.json(updated);
   } catch (err) {
@@ -40,7 +58,8 @@ export const deleteService = async (req, res) => {
     const deleted = await Service.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "Service not found" });
     res.json({ message: "Service deleted" });
-  } catch (err) {
+  } catch (err)
+  {
     res.status(500).json({ message: "Failed to delete service." });
   }
 };

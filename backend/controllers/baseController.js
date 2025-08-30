@@ -1,10 +1,13 @@
+import { decode } from 'html-entities';
 import BaseDescription from '../models/BaseDescription.js';
 
 export const getBaseDescription = async (req, res) => {
   try {
     const baseDesc = await BaseDescription.findOne().sort({ createdAt: -1 });
     if (!baseDesc) {
-      return res.status(404).json({ message: 'No base description found.' });
+      // To avoid errors on a fresh DB, let's create a default one if it doesn't exist.
+      const newDesc = await BaseDescription.create({ description: 'Default parent company description.' });
+      return res.json({ description: newDesc.description });
     }
     res.json({ description: baseDesc.description });
   } catch (error) {
@@ -19,12 +22,17 @@ export const addOrUpdateBaseDescription = async (req, res) => {
       return res.status(400).json({ message: 'Description is required.' });
     }
 
+    // Decode the sanitized description from the xss middleware
+    const decodedDescription = decode(description);
+
     let baseDesc = await BaseDescription.findOne();
     if (baseDesc) {
-      baseDesc.description = description;
+      // Update with the decoded description
+      baseDesc.description = decodedDescription;
       await baseDesc.save();
     } else {
-      baseDesc = new BaseDescription({ description });
+      // Create with the decoded description
+      baseDesc = new BaseDescription({ description: decodedDescription });
       await baseDesc.save();
     }
 
