@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // 1. Import useRef
 import { useLatestProducts } from '../context/LatestProductContext.jsx';
 import { toast } from 'react-toastify';
 
@@ -13,14 +13,16 @@ const ChangeLatestProduct = () => {
     sectionTitle,
     setSectionTitle,
     sectionImage,
-    setSectionImage: uploadSectionImage, // rename for clarity
+    setSectionImage: uploadSectionImage,
   } = useLatestProducts();
 
   const [titleInput, setTitleInput] = useState(sectionTitle);
   const [sectionImagePreview, setSectionImagePreview] = useState(sectionImage);
   const [uploading, setUploading] = useState(false);
-
   const [tempBrief, setTempBrief] = useState(briefDescription);
+
+  // 2. Create a ref for the form section
+  const formRef = useRef(null);
 
   useEffect(() => {
     setTempBrief(briefDescription);
@@ -30,7 +32,7 @@ const ChangeLatestProduct = () => {
 
   const [productForm, setProductForm] = useState({
     id: null,
-    image: null, // File or URL string
+    image: null,
     title: '',
     description: '',
     features: [],
@@ -38,14 +40,12 @@ const ChangeLatestProduct = () => {
   });
 
   const [featureInput, setFeatureInput] = useState('');
-  const [imagePreview, setImagePreview] = useState(''); // base64 string for preview
+  const [imagePreview, setImagePreview] = useState('');
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setProductForm((prev) => ({ ...prev, image: file }));
-
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
@@ -53,16 +53,13 @@ const ChangeLatestProduct = () => {
     reader.readAsDataURL(file);
   };
 
-  // Use context upload function for section image
   const handleSectionImageUpload = async (file) => {
     setUploading(true);
     try {
       await uploadSectionImage(file);
       setUploading(false);
-      
     } catch (error) {
       setUploading(false);
-      
       console.error(error);
     }
   };
@@ -106,41 +103,42 @@ const ChangeLatestProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { title, description, features, link, image, id } = productForm;
-
     if (
       !title.trim() ||
       !description.trim() ||
       !link.trim() ||
       !features.length ||
-      (!id && !image) // require image when adding new product
+      (!id && !image)
     ) {
       toast.error(
         'All fields are required, including at least one feature and an image (when adding a product).'
       );
       return;
     }
-
     if (id) {
       await updateProduct(productForm);
     } else {
       await addProduct(productForm);
     }
-
     clearForm();
   };
 
   const handleEdit = (product) => {
     setProductForm({
       id: product.id || product._id,
-      image: product.image || null, // URL string
+      image: product.image || null,
       title: product.title,
       description: product.description,
       features: product.features || [],
       link: product.link || '',
     });
     setImagePreview(product.image || '');
+
+    // 4. Trigger the scroll
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleDelete = (id) => {
@@ -156,7 +154,7 @@ const ChangeLatestProduct = () => {
         Verzat R&D Lab Page
       </h1>
 
-      {/* R&D Lab Title */}
+      {/* ... Other sections remain unchanged ... */}
       <div className="mb-8">
         <label className="block text-2xl font-semibold mb-2">R&D Lab Title</label>
         <input
@@ -169,7 +167,6 @@ const ChangeLatestProduct = () => {
           <button
             onClick={() => {
               setSectionTitle(titleInput);
-            //   toast.success('Title saved!');
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
@@ -184,7 +181,6 @@ const ChangeLatestProduct = () => {
         </div>
       </div>
 
-      {/* R&D Lab Background Image */}
       <div className="mb-10">
         <label className="block text-2xl font-semibold mb-2">
           Upload Background Image
@@ -210,7 +206,6 @@ const ChangeLatestProduct = () => {
         )}
       </div>
 
-      {/* Description */}
       <section className="mb-8 mt-6">
         <h2 className="text-2xl font-semibold mb-2">R&D Lab Description</h2>
         <textarea
@@ -229,9 +224,9 @@ const ChangeLatestProduct = () => {
       <hr />
 
       <br />
-
-      {/* Product Form */}
-      <section className="mb-10">
+      
+      {/* 3. Attach the ref to this section */}
+      <section ref={formRef} className="mb-10">
         <h2 className="text-2xl font-semibold mb-2">
           {productForm.id ? 'Edit Product' : 'Add New Product'}
         </h2>
@@ -266,7 +261,6 @@ const ChangeLatestProduct = () => {
             onChange={handleFormChange}
             className="p-2 border rounded"
           />
-
           <input
             type="text"
             name="link"
@@ -275,7 +269,6 @@ const ChangeLatestProduct = () => {
             onChange={handleFormChange}
             className="p-2 border rounded"
           />
-
           <div>
             <div className="flex gap-2 mb-2">
               <input
@@ -311,7 +304,6 @@ const ChangeLatestProduct = () => {
               ))}
             </ul>
           </div>
-
           <div className="flex gap-2 mt-2">
             <button
               type="submit"
@@ -330,7 +322,7 @@ const ChangeLatestProduct = () => {
         </form>
       </section>
 
-      {/* Products List with full details */}
+      {/* Products List section remains unchanged */}
       <section>
         <h2 className="text-2xl font-semibold mb-4">Products</h2>
         {products.map((product) => (
@@ -347,7 +339,6 @@ const ChangeLatestProduct = () => {
               <div className="flex-1">
                 <h3 className="text-xl font-bold mb-2">{product.title}</h3>
                 <p className="mb-2">{product.description}</p>
-
                 <div>
                   <h4 className="font-semibold mb-1">Key Features:</h4>
                   <ul className="list-disc list-inside">
@@ -357,7 +348,6 @@ const ChangeLatestProduct = () => {
                       ))}
                   </ul>
                 </div>
-
                 <a
                   href={product.link}
                   target="_blank"
@@ -366,7 +356,6 @@ const ChangeLatestProduct = () => {
                 >
                   Visit Link
                 </a>
-
                 <div className="mt-4 flex gap-4">
                   <button
                     onClick={() => handleEdit(product)}

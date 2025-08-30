@@ -77,7 +77,7 @@ const ChangeHeroContent = () => {
 
   return (
     <div className="p-8 max-w-4xl bg-white mx-auto">
-      <h2 className="text-center text-3xl text-blue-700 mb-8 font-bold">Verzat Home Page</h2>
+      <h2 className="text-center text-3xl text-blue-700 mb-8 font-bold">Verzat R&D Home Page</h2>
       <form onSubmit={handleSubmit} className="p-6">
         <div>
           <label className="block mb-2 font-medium text-2xl">Home Page Title</label>
